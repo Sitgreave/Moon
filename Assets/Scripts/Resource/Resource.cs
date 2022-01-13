@@ -4,7 +4,7 @@ public class Resource : MonoBehaviour
 {    
    
     [SerializeField] private ResourceType _type;
-    [SerializeField] private RectTransform _transform;
+    [SerializeField] private Transform _transform;
     [SerializeField] private BoxCollider _boxCollider;
     public bool LockedToMove;
     public ResourceType Type => _type;

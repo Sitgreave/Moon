@@ -132,8 +132,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 226901944}
+  - component: {fileID: 226901945}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Marks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,6 +154,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &226901945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226901943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faf809ec9f482524593ff03e56036236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _parent: {fileID: 0}
+  _rowLimit: 3
+  _floorLimit: 5
+  _columnLimit: 3
 --- !u!1 &335701206
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,7 +358,6 @@ GameObject:
   - component: {fileID: 894684225}
   - component: {fileID: 894684224}
   - component: {fileID: 894684223}
-  - component: {fileID: 894684222}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -349,26 +365,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &894684222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 894684221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: faf809ec9f482524593ff03e56036236, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  block: {fileID: 1821062101}
-  parent: {fileID: 226901944}
-  Width: 3
-  Height: 1
-  Depth: 3
-  xOffset: 0.5
-  yOffset: 0
-  zOffset: 0.5
 --- !u!65 &894684223
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -534,7 +530,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821062101}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6989491, y: 0.5891706, z: 78.16}
+  m_LocalPosition: {x: -3.49, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}

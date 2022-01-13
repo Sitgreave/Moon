@@ -4,59 +4,72 @@ using UnityEngine;
 
 public class GridSystem : MonoBehaviour
 {
-    public GameObject block;
-    public Transform parent;
-
+    
+    [SerializeField] private Transform _parent;
     [SerializeField] private uint _rowLimit = 3; //x
     [SerializeField] private uint _floorLimit = 3; //y
     [SerializeField] private uint _columnLimit = 3; //z
+    [SerializeField] private Mark _markPrefab;
+
+    private List<Mark> _marks = new List<Mark>();
+    public List<Mark> Marks => _marks;
 
     private uint _currentRow = 0;
     private uint _currentFloor = 0;
     private uint _currentColumn = 0;
 
-
      private float xOffset = 0;
      private float yOffset = 0;
      private float zOffset = 0;
 
-     private float xIncreacer = 0;
-     private float yIncreacer = 0;
-     private float zIncreacer = 0;
+     private float xIncreacer = .6f;
+     private float yIncreacer = .6f;
+     private float zIncreacer = .6f;
 
-    
-    void Start()
+    private void Start()
     {
-        StartCoroutine(enumerator());
+        CreateAllMarks(_rowLimit * _floorLimit * _columnLimit);
     }
-
-    IEnumerator enumerator()
+    public void SetIncreacers(float x, float y, float z)
     {
-        for (int i = 0; i < 9; i++)
+        xIncreacer = x;
+        yIncreacer = y;
+        zIncreacer = z;
+    }
+   
+    public void CreateAllMarks(uint count)
+    {
+        for (int i = 0; i < count; i++)
         {
-
-            if (!RowNotFull() && ColumnNotFull())
-            {
-                NewColumn();
-            }
-            else if (FloorNotFull())
-            {
-                NewFloor();
-            }
-
-            SpawnInCell();
-            yield return new WaitForSeconds(1);
+            CreateNewPoint();
         }
     }
+    private void CreateNewPoint()
+    {
+        if (!RowNotFull() && ColumnNotFull())
+        {
+            NewColumn();
+        }
+        if (FloorNotFull() && !ColumnNotFull())
+        {
+            NewFloor();
+        }
+        MarkNewPoint();
+    }
+  
 
-    private void SpawnInCell()
+    private void MarkNewPoint()
     {
         Vector3 newPos = new Vector3(
                        x: xOffset,
                        y: yOffset,
                        z: zOffset
                        );
-        Instantiate(block, newPos, Quaternion.identity, parent);
+        newPos += _parent.position;
+        Mark newMark = Instantiate(_markPrefab, newPos, Quaternion.identity, _parent);
+        newMark.Position = newPos;
+        Marks.Add(newMark);
+       
         xOffset += xIncreacer;
         _currentRow++;
     }
