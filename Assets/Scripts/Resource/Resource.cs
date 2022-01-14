@@ -6,7 +6,7 @@ public class Resource : MonoBehaviour
     [SerializeField] private ResourceType _type;
     [SerializeField] private Transform _transform;
     [SerializeField] private BoxCollider _boxCollider;
-    public bool LockedToMove;
+    public bool LockedToTake;
     public ResourceType Type => _type;
     public new Transform transform => _transform;
     

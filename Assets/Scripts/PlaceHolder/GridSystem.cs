@@ -67,7 +67,6 @@ public class GridSystem : MonoBehaviour
                        );
         newPos += _parent.position;
         Mark newMark = Instantiate(_markPrefab, newPos, Quaternion.identity, _parent);
-        newMark.Position = newPos;
         Marks.Add(newMark);
        
         xOffset += xIncreacer;
