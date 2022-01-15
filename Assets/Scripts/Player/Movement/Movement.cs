@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private FloatingJoystick _joystick;
-    [SerializeField] [Range(0,10)] private float _movementSpeed;
+    [SerializeField] [Range(0,10)] public float MovementSpeed;
+
 
     private void FixedUpdate()
     {
@@ -14,17 +14,17 @@ public class Movement : MonoBehaviour
 
         if(_joystick.Horizontal != 0 || _joystick.Vertical != 0)
         {
-            _rigidbody.rotation = Quaternion.LookRotation(_rigidbody.velocity);
+            Quaternion rotation = Quaternion.LookRotation(_rigidbody.velocity);
+            Vector3 newRotation = rotation.eulerAngles;
+            _rigidbody.DORotate(newRotation, .2f);
         }
     }
-
-
     private Vector3 Direction()
     {
         return new Vector3(
-            x: _joystick.Horizontal * _movementSpeed,
+            x: _joystick.Horizontal * MovementSpeed,
             y: _rigidbody.velocity.y,
-            z: _joystick.Vertical * _movementSpeed 
+            z: _joystick.Vertical * MovementSpeed
             );
     }
 }

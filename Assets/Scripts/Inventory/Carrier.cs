@@ -2,59 +2,91 @@ using System.Collections;
 using UnityEngine;
 
 public class Carrier : MonoBehaviour
-{
-    [SerializeField] private Inventory _inventoryFrom;
-    private ResourceType _requiredType;
-    private bool _doTransfering = false;
+{ 
+    [SerializeField] [Range(.1f, 1)] private float _transferInterval;
+    private Inventory _inventoryFrom;
+    private Inventory _inventoryTo;
+    public bool _doTransfering = false;
     private Coroutine _transfering;
+   
 
-    private void OnTriggerStay(Collider other)
+    public void DefineInventories(Inventory to, Inventory from)
     {
-        if (!_doTransfering)
-        {
-            if (other.TryGetComponent<FactoryInventory>(out FactoryInventory factoryInventory))
+        if(_inventoryFrom == null) _inventoryFrom = from;
+        if(_inventoryTo == null) _inventoryTo = to;
+       
+    }
+
+    public void TryTransfer(Inventory to, Inventory from, bool needStayOnPlace)
+    {
+        DefineInventories(to, from);
+            if (TransferConditionsMet())
             {
-                if (_inventoryFrom.Resources.Count > 0)
+                if(!needStayOnPlace)
+                _transfering = StartCoroutine(ResourceTransfering(needStayOnPlace));
+                else if(Input.GetMouseButton(0)) 
+                _transfering = StartCoroutine(ResourceTransfering(needStayOnPlace)); ;
+        } 
+    }
+
+    public void StopTransfering()
+    {
+        _doTransfering = false;
+        _transfering = null;
+        if (_inventoryFrom.ResourcesToTransfering.Count != 0)
+        {
+            _inventoryFrom.ResourcesToTransfering.Clear();
+        }
+        _inventoryTo = null;
+        _inventoryFrom = null;
+    }
+    private bool TransferConditionsMet()
+    {
+        if (_inventoryFrom != null && _inventoryTo != null)
+        {
+            if (!_doTransfering)
+            {
+                if (_inventoryFrom.NotEmpty())
                 {
-                    _doTransfering = true;
-                    if (_transfering == null)
+                    if (_inventoryTo.NotFull())
                     {
-                     
-                        _transfering = StartCoroutine(ResourceTransfer(factoryInventory));
+                        if (_transfering == null)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
         }
+        else Debug.Log("Conditions error");
+        return false;
     }
 
-    public void CarryResource(Inventory to)
-    {
-        to.GetNewResource(_inventoryFrom.ResourcesToTransfering.Pop());
-    }
+    
 
-
-    private void OnTriggerExit(Collider other)
+     private IEnumerator ResourceTransfering(bool needStayOnPlace)
     {
-        if (other.TryGetComponent<FactoryInventory>(out FactoryInventory factoryInventory))
-        {
-            _doTransfering = false;
-            _transfering = null;
-        }
-    }
-
-     private IEnumerator ResourceTransfer(Inventory to)
-    {
-       
+            _inventoryFrom.PrepareToTransfering(ResourceType.Type_1);
+        _doTransfering = true;
         while (_doTransfering)
         {
-            _inventoryFrom.PrepareToTransfering(ResourceType.Type_1);
+
             if (_inventoryFrom.ResourcesToTransfering.Count > 0)
             {
-                CarryResource(to);
-                yield return new WaitForSeconds(.4f);
+                if (!needStayOnPlace)
+                {
+                    GetResource();
+                }
+                else if (!Input.GetMouseButton(0)) GetResource();
             }
-            else break;
+            else _inventoryFrom.PrepareToTransfering(ResourceType.Type_1);
+            yield return new WaitForSeconds(_transferInterval);
         }
-        
+    }
+
+    private void GetResource()
+    {
+        _inventoryFrom.DropResource(_inventoryFrom.ResourcesToTransfering.Peek());
+        _inventoryTo.GetNewResource(_inventoryFrom.ResourcesToTransfering.Pop());
     }
 }

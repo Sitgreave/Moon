@@ -4,14 +4,8 @@ using UnityEngine;
 
 public class FactoryInventory : Inventory
 {
-    [SerializeField] private ResourceType []requiredTypes;
-    
-    public bool ThisTypeRequired(ResourceType type)
+    public void GetFilling()
     {
-        for (int i = 0; i < requiredTypes.Length; i++)
-        {
-            if (requiredTypes[i] == type) return true;
-        }
-        return false;
+        throw new System.NotImplementedException();
     }
 }

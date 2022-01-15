@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5712132897729565558}
   - component: {fileID: 5712132897729565559}
   - component: {fileID: 5712132897729565552}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Type1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,4 +111,4 @@ MonoBehaviour:
   _type: 0
   _transform: {fileID: 4729945610781103896}
   _boxCollider: {fileID: 5712132897729565559}
-  LockedToMove: 0
+  LockedToTake: 0

@@ -5,8 +5,10 @@ using UnityEngine;
 public class Vision : MonoBehaviour
 {
     [SerializeField] private LayerMask _resourceLayer;
-    private Queue<Resource> _nearResources = new Queue<Resource>();
-    public Queue<Resource> NearResources => _nearResources;
+    [SerializeField] private float _radius;
+    [SerializeField] private new Transform transform;
+    private Stack<Resource> _nearResources = new Stack<Resource>();
+    public Stack<Resource> NearResources => _nearResources;
     public delegate void ObjectDetected();
     public event ObjectDetected ResourceDetected;
     private void Start()
@@ -17,7 +19,7 @@ public class Vision : MonoBehaviour
     {
         while (true)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, 2, _resourceLayer);
+            Collider[] hits = Physics.OverlapSphere(transform.position, _radius, _resourceLayer);
             if (hits.Length > 0)
             {
                 int i = hits.Length - 1;
@@ -25,12 +27,12 @@ public class Vision : MonoBehaviour
                 {
                     if (!resource.LockedToTake)
                     {
-                        _nearResources.Enqueue(resource);
+                        _nearResources.Push(resource);
                         if (ResourceDetected != null) ResourceDetected.Invoke();
                     }
                 }
             }
-            yield return new WaitForSeconds(.4f);
+            yield return new WaitForSeconds(.3f);
         }
     }
 }
