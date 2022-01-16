@@ -26,7 +26,7 @@ public class GridSystem : MonoBehaviour
      private float yIncreacer = .6f;
      private float zIncreacer = .6f;
 
-    private void Start()
+    private void Awake()
     {
         CreateAllMarks(_rowLimit * _floorLimit * _columnLimit);
     }

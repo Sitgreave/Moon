@@ -6,33 +6,42 @@ public class Inventory : MonoBehaviour
     [SerializeField] private int _capacity;
     [SerializeField] private InventoryType _inventoryType;
     [SerializeField] private PlaceHolder _placeHolder;
-    [SerializeField] protected List<Resource> resources = new List<Resource>();
+    protected List<Resource> resources = new List<Resource>();
     public List<Resource> Resources => resources;
     private Stack<Resource> _resourcesToTransfering = new Stack<Resource>();
     public Stack<Resource> ResourcesToTransfering => _resourcesToTransfering;
     public InventoryType InventoryType => _inventoryType;
-
     private int _resourceCount = 0;
+
+    private Dictionary<ResourceType, uint> _countOfOneType = new Dictionary<ResourceType, uint>();
+    public Dictionary<ResourceType, uint> CountOfOneType => _countOfOneType;
     public void PrepareToTransfering(ResourceType type)
     {
         if (Resources.Count > 0)
         {
-            for (int i = 0; i < Resources.Count; i++)
+           for (int i = 0; i < Resources.Count; i++)
             {
-                if (Resources[i].Type == type)
+                if (Resources[i].Type == type && !Resources[i].LockedToTake)
                 {
                     _resourcesToTransfering.Push(Resources[i]);
-                    Resources[i].LockedToTake = true;
                 }
             }
         }
     }
+    
+
+
     public virtual void GetNewResource(Resource resource)
     {
         if (NotFull())
         {
             _placeHolder.HoldResource(resource);
             _resourceCount++;
+            if (_countOfOneType.TryGetValue(resource.Type, out _))
+            {
+                _countOfOneType[resource.Type]++;
+            }
+            else _countOfOneType.Add(resource.Type, 1);
             Resources.Add(resource);
         }
     }
@@ -43,6 +52,7 @@ public class Inventory : MonoBehaviour
         {
             _placeHolder.TransferResource(resource);
             _resourceCount--;
+            _countOfOneType[resource.Type]--;
             Resources.Remove(resource);
         }
     }

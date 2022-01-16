@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5712132897729565559}
   - component: {fileID: 5712132897729565552}
   m_Layer: 4
-  m_Name: Type1
+  m_Name: Type3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,7 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 724c40bf5edef304b8afae1303db3d1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 0
+  _type: 1
   _transform: {fileID: 4729945610781103896}
-  _boxCollider: {fileID: 5712132897729565559}
   LockedToTake: 1

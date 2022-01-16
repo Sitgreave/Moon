@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class Carrier : MonoBehaviour
 { 
-    [SerializeField] [Range(.1f, 1)] private float _transferInterval;
+    [SerializeField] [Range(.1f, 10)] private float _transferInterval = .3f;
     private Inventory _inventoryFrom;
     private Inventory _inventoryTo;
     public bool _doTransfering = false;
     private Coroutine _transfering;
-   
 
     public void DefineInventories(Inventory to, Inventory from)
     {
@@ -17,15 +16,21 @@ public class Carrier : MonoBehaviour
        
     }
 
-    public void TryTransfer(Inventory to, Inventory from, bool needStayOnPlace)
+    public void TryTransfer(Inventory to, Inventory from)
+    {
+        DefineInventories(to, from);
+        if (TransferConditionsMet())
+        {
+            if(!Input.GetMouseButton(0))
+            _transfering = StartCoroutine(ResourceTransfering());
+        }
+    } 
+    public void TryTransfer(Inventory to, Inventory from, ResourceType type)
     {
         DefineInventories(to, from);
             if (TransferConditionsMet())
             {
-                if(!needStayOnPlace)
-                _transfering = StartCoroutine(ResourceTransfering(needStayOnPlace));
-                else if(Input.GetMouseButton(0)) 
-                _transfering = StartCoroutine(ResourceTransfering(needStayOnPlace)); ;
+                _transfering = StartCoroutine(ResourceTransfering(type));
         } 
     }
 
@@ -33,10 +38,7 @@ public class Carrier : MonoBehaviour
     {
         _doTransfering = false;
         _transfering = null;
-        if (_inventoryFrom.ResourcesToTransfering.Count != 0)
-        {
-            _inventoryFrom.ResourcesToTransfering.Clear();
-        }
+        _inventoryFrom.ResourcesToTransfering.Clear();
         _inventoryTo = null;
         _inventoryFrom = null;
     }
@@ -46,15 +48,9 @@ public class Carrier : MonoBehaviour
         {
             if (!_doTransfering)
             {
-                if (_inventoryFrom.NotEmpty())
+                if (_transfering == null)
                 {
-                    if (_inventoryTo.NotFull())
-                    {
-                        if (_transfering == null)
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
                 }
             }
         }
@@ -62,31 +58,55 @@ public class Carrier : MonoBehaviour
         return false;
     }
 
-    
 
-     private IEnumerator ResourceTransfering(bool needStayOnPlace)
+
+    private IEnumerator ResourceTransfering(ResourceType resourceType)
     {
-            _inventoryFrom.PrepareToTransfering(ResourceType.Type_1);
         _doTransfering = true;
         while (_doTransfering)
         {
-
-            if (_inventoryFrom.ResourcesToTransfering.Count > 0)
-            {
-                if (!needStayOnPlace)
-                {
-                    GetResource();
-                }
-                else if (!Input.GetMouseButton(0)) GetResource();
-            }
-            else _inventoryFrom.PrepareToTransfering(ResourceType.Type_1);
+            GetResource(resourceType);
+            yield return new WaitForSeconds(_transferInterval);
+        }
+    }     
+    private IEnumerator ResourceTransfering()
+    {
+        _doTransfering = true;
+        while (_doTransfering)
+        {
+            if (!Input.GetMouseButton(0)) GetResource();
             yield return new WaitForSeconds(_transferInterval);
         }
     }
 
     private void GetResource()
     {
-        _inventoryFrom.DropResource(_inventoryFrom.ResourcesToTransfering.Peek());
-        _inventoryTo.GetNewResource(_inventoryFrom.ResourcesToTransfering.Pop());
+        if (_inventoryFrom.NotEmpty() && _inventoryTo.NotFull())
+        {
+            if (_inventoryFrom.ResourcesToTransfering.Count == 0)
+            {
+                _inventoryFrom.PrepareToTransfering(ResourceType.Type_1);
+            }
+            else
+            {
+                Resource resource = _inventoryFrom.ResourcesToTransfering.Pop();
+                _inventoryFrom.DropResource(resource);
+                _inventoryTo.GetNewResource(resource);
+            }
+        }
+    } 
+    
+    private void GetResource(ResourceType type)
+    {
+        if (_inventoryFrom.NotEmpty() && _inventoryTo.NotFull())
+        {
+            if (_inventoryFrom.ResourcesToTransfering.Count == 0)
+            {
+                _inventoryFrom.PrepareToTransfering(type);
+            }
+            Resource resource = _inventoryFrom.ResourcesToTransfering.Pop();
+            _inventoryFrom.DropResource(resource);
+            _inventoryTo.GetNewResource(resource);
+        }
     }
 }

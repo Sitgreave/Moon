@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class Resource : MonoBehaviour
@@ -5,16 +6,15 @@ public class Resource : MonoBehaviour
    
     [SerializeField] private ResourceType _type;
     [SerializeField] private Transform _transform;
-    [SerializeField] private BoxCollider _boxCollider;
+
     public bool LockedToTake;
     public ResourceType Type => _type;
     public new Transform transform => _transform;
-    
-    public float Height()
+
+    private void Start()
     {
-        return _boxCollider.size.y;
+        _transform.DOShakeScale(3, .3f, 3, 90, true);
     }
-    //public ResoruceType Type;
 }
 
 public enum ResourceType

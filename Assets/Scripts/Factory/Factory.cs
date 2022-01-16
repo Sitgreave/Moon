@@ -1,29 +1,47 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Factory : MonoBehaviour
 {
     [SerializeField] private Inventory _inventory;
-    [SerializeField] private float _delay;
+    [SerializeField] private Transform _dropResourceFrom;
+    [SerializeField] [Range(1, 30)] private float _delay;
     [SerializeField] private Resource _production;
-   
+
 
     private void Start()
     {
-        StartCoroutine(Producing());
+        StartCoroutine(Producing()); 
     }
     private IEnumerator Producing()
     {
         while (true)
         {
-            while (_inventory.NotFull())
+           if(ConditionsMet())
             {
-                Resource newResource = Instantiate(_production, transform);
+                Resource newResource = Instantiate(
+                    _production, 
+                    _dropResourceFrom.position, 
+                    Quaternion.identity,
+                    _dropResourceFrom);
+
                 _inventory.GetNewResource(newResource);
-                yield return new WaitForSeconds(_delay);
             }
+            yield return new WaitForSeconds(_delay);
         }
     }
-   
+    
+    private bool ConditionsMet()
+    {
+        if (_inventory.NotFull() && ProduceConditionsMet()) return true;
+        return false;
+    }
+
+    protected virtual bool ProduceConditionsMet()
+    {
+        return true;
+    }
+    
 
 }
