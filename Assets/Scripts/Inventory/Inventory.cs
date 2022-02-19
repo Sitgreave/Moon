@@ -27,6 +27,16 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
+    } 
+    public void PrepareToTransfering()
+    {
+        if (Resources.Count > 0)
+        {
+           for (int i = 0; i < Resources.Count; i++)
+            {
+                    _resourcesToTransfering.Push(Resources[i]);
+            }
+        }
     }
     
 

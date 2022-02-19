@@ -32,12 +32,16 @@ public class Factory : MonoBehaviour
         }
     }
     
+    
     private bool ConditionsMet()
     {
         if (_inventory.NotFull() && ProduceConditionsMet()) return true;
         return false;
     }
-
+    protected virtual bool ResourceReceived()
+    {
+        return true;
+    }
     protected virtual bool ProduceConditionsMet()
     {
         return true;

@@ -1,18 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComplexFactory : MonoBehaviour
+public class ComplexFactory : Factory
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] protected List<ResourceType> _requiredTypes;
+    [SerializeField] protected Inventory _storage;
+    protected override bool ProduceConditionsMet()
     {
-        
+        return HaveResources();
     }
 
-    // Update is called once per frame
-    void Update()
+    private bool HaveResources()
     {
-        
+        for (int i = 0; i < _requiredTypes.Count; i++)
+        {
+            if (_storage.CountOfOneType.TryGetValue(_requiredTypes[i], out uint value))
+            {
+                if (value > 0) return true;
+            }
+        }
+        return false;
     }
 }

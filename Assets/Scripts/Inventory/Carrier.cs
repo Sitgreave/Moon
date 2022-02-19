@@ -13,9 +13,7 @@ public class Carrier : MonoBehaviour
     {
         if(_inventoryFrom == null) _inventoryFrom = from;
         if(_inventoryTo == null) _inventoryTo = to;
-       
     }
-
     public void TryTransfer(Inventory to, Inventory from)
     {
         DefineInventories(to, from);
@@ -85,7 +83,7 @@ public class Carrier : MonoBehaviour
         {
             if (_inventoryFrom.ResourcesToTransfering.Count == 0)
             {
-                _inventoryFrom.PrepareToTransfering(ResourceType.Type_1);
+                _inventoryFrom.PrepareToTransfering();
             }
             else
             {
@@ -104,9 +102,12 @@ public class Carrier : MonoBehaviour
             {
                 _inventoryFrom.PrepareToTransfering(type);
             }
-            Resource resource = _inventoryFrom.ResourcesToTransfering.Pop();
-            _inventoryFrom.DropResource(resource);
-            _inventoryTo.GetNewResource(resource);
+            else
+            {
+                Resource resource = _inventoryFrom.ResourcesToTransfering.Pop();
+                _inventoryFrom.DropResource(resource);
+                _inventoryTo.GetNewResource(resource);
+            }
         }
     }
 }
